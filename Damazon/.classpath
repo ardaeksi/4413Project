@@ -24,5 +24,15 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Users/arda/.m2/repository/org/springframework/security/spring-security-config/5.7.4/spring-security-config-5.7.4.jar" sourcepath="/Users/arda/.m2/repository/org/springframework/security/spring-security-config/5.7.4/spring-security-config-5.7.4-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.archivename" value="spring-security-config-5.7.4.jar"/>
+			<attribute name="maven.groupId" value="org.springframework.security"/>
+			<attribute name="maven.artifactId" value="spring-security-config"/>
+			<attribute name="maven.version" value="5.7.4"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

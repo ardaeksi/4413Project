@@ -1,4 +1,4 @@
-package model;
+package com.damazon.model;
 
 public class Product {
 
