@@ -20,7 +20,7 @@ public class OrderService {
     }
 
     // Fetch all orders
-    public List<Order> findAllOrders() {
+    public List<Order> getSalesHistory() {
         return orderRepository.findAll();
     }
 
@@ -54,5 +54,4 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    // Additional methods for business logic related to orders can be added here
 }

@@ -7,3 +7,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+
+app:
+  jwtSecret: "bXlKV1RTZWNyZXRLZXkxMjMh"  # Unpredictable key :O wow
+  jwtExpirationInMs: 604800000  # Token Expiration: One week (was in miliseconds)
