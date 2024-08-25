@@ -5,16 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.damazon.model.Product;
-import com.damazon.model.User;
-import com.damazon.model.Order;
-import com.damazon.service.ProductService;
-import com.damazon.service.UserService;
-import com.damazon.service.OrderService;
+import com.damazon.model.*;
+import com.damazon.service.*;
+
 
 @RestController
 @RequestMapping("/api/admin")
-@PreAuthorize("hasRole('ADMIN')") // Ensure that only users with the ADMIN role can access these endpoints
+@PreAuthorize("hasRole('ADMIN')") //Admin can only reach with role 
 public class AdminController {
 
     private final ProductService productService;
