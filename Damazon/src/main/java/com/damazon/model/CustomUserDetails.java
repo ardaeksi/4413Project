@@ -7,14 +7,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
-    private Long id;
+    private int id;
     private String username;
     private String password;
     private boolean isAdmin;  
 
     // Constructor
     public CustomUserDetails(String id, String username, String password, boolean isAdmin) {
-        this.id = Long.parseLong(id);
+        this.id = Integer.parseInt(id);
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
@@ -62,7 +62,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     // Get ID
-    public Long getId() {
+    public int getId() {
         return id;
     }
 

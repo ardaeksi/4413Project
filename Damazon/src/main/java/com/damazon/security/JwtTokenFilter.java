@@ -1,6 +1,7 @@
 package com.damazon.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,9 +25,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
         String token = getTokenFromRequest(request);
-        if (token != null && jwtTokenProvider.validateToken(token)) {
+        if (token != null) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            UsernamePasswordAuthenticationToken upAuth = (UsernamePasswordAuthenticationToken) authentication;
+            upAuth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         chain.doFilter(request, response);
