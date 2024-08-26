@@ -14,7 +14,7 @@ public class Wallet {
     private int expiYear;
     private int cvv;
 
-    // Constructors, getters, and setters
+    
     public Wallet() {}
 
     public Wallet(String cardNum, int expiMonth, int expiYear, int cvv) {

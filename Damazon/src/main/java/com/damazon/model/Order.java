@@ -1,94 +1,56 @@
 package com.damazon.model;
 
-import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.Table;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "Orders")
 public class Order {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "orderID")
+    private Long orderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Link to the User entity
+    @Column(name = "userID", nullable = false)
+    private Long userId;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OrderItem> orderItems = new HashSet<>(); // Collection of order items
+    @Column(name = "cost")
+    private Double cost;
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date orderDate; // Date of the order
+    @Column(name = "review")
+    private String review;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private OrderStatus status; // Status of the order, e.g., PENDING, SHIPPED, DELIVERED
-
-    // Constructors
-    public Order() {}
-
-    public Order(User user, Date orderDate, OrderStatus status) {
-        this.user = user;
-        this.orderDate = orderDate;
-        this.status = status;
-    }
-
-    // Getters and setters
-    public Long getId() {
-        return id;
+    public Long getOrderId() {
+        return orderId;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.orderId = id;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserID() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserID(Long userIde) {
+        this.userId = userIde;
     }
 
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
+    public Double getCost() {
+        return cost;
     }
-
-    public void setOrderItems(Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
+    
+    public void setCost(Double cost) {
+    	this.cost = cost;
     }
-
-    public void addOrderItem(OrderItem orderItem) {
-        this.orderItems.add(orderItem);
-        orderItem.setOrder(this);
+    
+    public String getReview() {
+    	return this.review;
     }
-
-    public void removeOrderItem(OrderItem orderItem) {
-        this.orderItems.remove(orderItem);
-        orderItem.setOrder(null);
+    
+    public void setReview(String review) {
+    	this.review = review;
     }
-
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-}
-
-enum OrderStatus {
-    PENDING, SHIPPED, DELIVERED, CANCELLED
+    
 }

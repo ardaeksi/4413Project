@@ -1,35 +1,38 @@
 package com.damazon.model;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "Users")  // Ensure the table name matches exactly with your database schema
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userId")
     private Long id;
+    
+    @Column(name = "userName", unique = true, nullable = false)
+    private String username;  
 
-    private String firstName;
-    private String lastName;
-    private String userName;
-    private String password;
+    @Column(name = "password", nullable = false)
+    private String password;  
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "wallet_id", referencedColumnName = "id")
-    private Wallet wallet;
+    @Column(name = "isAdmin", nullable = false)
+    private int isAdmin;  // 0 = user ,  1 = Admin
 
-    // Constructors, getters, and setters
-    public User() {}
+    @Column(name = "walletId")
+    private Integer walletId;  // Additional field to match your database structure
 
-    public User(String firstName, String lastName, String userName, String password, Wallet wallet) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.password = password;
-        this.wallet = wallet;
+    // Constructors
+    public User() {
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -38,28 +41,12 @@ public class User {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -70,11 +57,21 @@ public class User {
         this.password = password;
     }
 
-    public Wallet getWallet() {
-        return wallet;
+    public boolean isAdmin() {
+        return (isAdmin!=0) ;
     }
 
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
+    public void setAdmin(boolean admin) {
+    	this.isAdmin = admin ? 1 : 0;
     }
+
+    public Integer getWalletId() {
+        return walletId;
+    }
+
+    public void setWalletId(Integer walletId) {
+        this.walletId = walletId;
+    }
+
+    
 }

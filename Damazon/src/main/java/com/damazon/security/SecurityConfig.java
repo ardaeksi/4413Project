@@ -18,10 +18,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Ensure no session is created
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //We used tokens to validate so no need for state
             .and()
             .authorizeRequests()
-                .antMatchers("/api/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/admin/**").hasRole("ADMIN") //here we used security as role which is given in our CustomUserDetails
                 .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()
             .and()

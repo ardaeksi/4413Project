@@ -1,6 +1,7 @@
-package com.damazon.model;
+package com.damazon.security;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collections;
@@ -23,14 +24,14 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public List<GrantedAuthority> getAuthorities() {
     	
-        // If the user is admin, return an authority indicating as such
-        if (isAdmin) {
-            return Collections.singletonList(() -> "ROLE_ADMIN");
-        } else {
-            return Collections.singletonList(() -> "ROLE_USER");
-        }
-    }
+        // If the user is admin, returns the Authority as such
+    	if (isAdmin) {
+    	    return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    	} else {
+    	    return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+    	}
 
+    }
     @Override
     public String getPassword() {
         return password;
@@ -40,7 +41,7 @@ public class CustomUserDetails implements UserDetails {
     public String getUsername() {
         return username;
     }
-
+  
     @Override
     public boolean isAccountNonExpired() {
         return true;

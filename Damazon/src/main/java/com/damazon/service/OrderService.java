@@ -18,39 +18,46 @@ public class OrderService {
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
-
-    // Fetch all orders
+    
+    
+    // Fetch all orders (only for admin)
     public List<Order> getSalesHistory() {
         return orderRepository.findAll();
     }
-
-    // Fetch a single order by ID
-    public Optional<Order> findOrderById(Long id) {
-        return orderRepository.findById(id);
+	
+    // Fetch a single order by orderID
+    public Optional<Order> findOrderById(Long orderId) {
+        return orderRepository.findByOrderId(orderId);
     }
-
+    // Fetch all orders by userID
+    public List <Order> getAllOrdersByUserId(Long userId){
+    	return orderRepository.findByUserId(userId);
+    }
     // Create a new order
     @Transactional
     public Order createOrder(Order order) {
         return orderRepository.save(order);
     }
-
+    
+    
     // Update an existing order
     @Transactional
-    public Order updateOrder(Long id, Order updatedOrder) {
-        return orderRepository.findById(id)
-            .map(order -> {
-                order.setOrderStatus(updatedOrder.getOrderStatus());
-                order.setOrderDetails(updatedOrder.getOrderDetails());
-                // Add more fields as necessary
-                return orderRepository.save(order);
+    public Order updateOrder(Long orderId, Order updatedOrder) {
+        return orderRepository.findById(orderId)
+            .map(existingOrder -> {
+                // Updates the fields of the existing order, since only these 2 fields made sense to change included these
+                existingOrder.setReview(updatedOrder.getReview());
+                return orderRepository.save(existingOrder);
             })
-            .orElseThrow(() -> new RuntimeException("Order not found with id " + id));
+            .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
     }
-
+	
     // Delete an order
     @Transactional
     public void deleteOrder(Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new RuntimeException("Order not found with id " + id);
+        }
         orderRepository.deleteById(id);
     }
 

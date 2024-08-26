@@ -1,13 +1,25 @@
 package com.damazon.service;
 
+import com.damazon.dto.AuthenticationResponse;
 import com.damazon.model.User;
 import com.damazon.repository.UserRepository;
+import com.damazon.security.JwtTokenProvider;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -17,22 +29,17 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+       
     // Load user by username
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
-                .authorities(user.isAdmin() ? "ROLE_ADMIN" : "ROLE_USER")
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .disabled(false)
-                .build();
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),"", Collections.singletonList(new SimpleGrantedAuthority(user.isAdmin() ? "ROLE_ADMIN" : "ROLE_USER")));
     }
 
     // Register a new user
@@ -40,11 +47,83 @@ public class UserService implements UserDetailsService {
         if (userRepository.existsByUsername(username)) {
             throw new RuntimeException("Error: Username is already taken!");
         }
-
+        
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
-        newUser.setAdmin(isAdmin);
-        return userRepository.save(newUser);
+        newUser.setAdmin(false); //Admin can only be manually added to database
+        return userRepository.save(newUser); //Adds to database using JPQL
     }
+    
+    
+    //Main authenticator that binds into Jwt Token
+    public ResponseEntity<?> authenticateUser(User loginRequest) {
+        UserDetails userDetails;
+        try {
+            userDetails = loadUserByUsername(loginRequest.getUsername());
+            if (!passwordEncoder.matches(loginRequest.getPassword(), userDetails.getPassword())) {
+                throw new BadCredentialsException("Invalid password");
+            }
+        } catch (UsernameNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+        }
+        
+        String token = jwtTokenProvider.generateToken(userDetails);
+        AuthenticationResponse response = new AuthenticationResponse(userDetails.getUsername(), userDetails.getAuthorities().toString(), token);
+        return ResponseEntity.ok(response);
+    }
+    
+    @Transactional
+    public ResponseEntity<?> registerUser(User newUser) {
+        if (userRepository.existsByUsername(newUser.getUsername())) {
+            return ResponseEntity.badRequest().body("Error: Username is already taken!");
+        }
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        userRepository.save(newUser);
+
+        return ResponseEntity.ok("User registered");
+    }
+
+    
+    //Admin method Admins can even retrieve password, weakpoint for security but didn't said encrypt
+    public List<User> getAllUsers(){
+    	return userRepository.findAll();
+    }
+    
+    @Transactional
+    public User updateUser(Long id, User updatedUser) {
+        // Attempt to find the existing user by ID
+        Optional<User> userOptional = userRepository.findById(id);
+        if (!userOptional.isPresent()) {
+            // Handle the case where the user does not exist
+            // You can throw a custom exception or return null
+            throw new RuntimeException("User not found with id: " + id);
+        }
+
+        User existingUser = userOptional.get();
+
+        
+        if (updatedUser.getUsername() != null) {
+            existingUser.setUsername(updatedUser.getUsername());
+        }
+      
+        if (updatedUser.getPassword() != null) {
+            existingUser.setPassword(updatedUser.getPassword());
+        }
+        if (updatedUser.getWalletId() != null) {
+        	existingUser.setWalletId(updatedUser.getWalletId());
+        }
+        if (updatedUser.isAdmin() != existingUser.isAdmin()) {
+        	existingUser.setAdmin(updatedUser.isAdmin());
+        }
+        // Saves the updated user
+        return userRepository.save(existingUser);
+    }
+    
+    
+    public void deleteUser(Long userId) {
+        userRepository.findById(userId).ifPresent(userRepository::delete);
+    }
+    
+    
 }
