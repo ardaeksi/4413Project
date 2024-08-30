@@ -1,34 +1,29 @@
 package com.damazon.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "Users")  // Ensure the table name matches exactly with your database schema
+@Table(name = "users")  
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId")
+    @Column(name = "user_id")
     private Long id;
     
-    @Column(name = "userName", unique = true, nullable = false)
+    @Column(name = "user_name", unique = true, nullable = false)
     private String username;  
 
     @Column(name = "password", nullable = false)
     private String password;  
 
-    @Column(name = "isAdmin", nullable = false)
+    @Column(name = "is_admin", nullable = false)
     private int isAdmin;  // 0 = user ,  1 = Admin
 
-    @Column(name = "walletId")
-    private Integer walletId;  // Additional field to match your database structure
+    @Column(name = "wallet_id")
+    private Integer walletId;  
 
-    // Constructors
+
     public User() {
     }
 

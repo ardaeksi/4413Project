@@ -7,11 +7,11 @@ public class ItemResponse {
     private Integer price;
     private Integer productAmount;
 
-    // Default constructor
+    
     public ItemResponse() {
     }
 
-    // Constructor with all parameters
+    
     public ItemResponse(Integer itemId, String name, String description, Integer price, Integer productAmount) {
         this.itemId = itemId;
         this.name = name;
@@ -20,7 +20,6 @@ public class ItemResponse {
         this.productAmount = productAmount;
     }
 
-    // Getters and Setters
     public Integer getItemId() {
         return itemId;
     }

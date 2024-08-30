@@ -1,15 +1,18 @@
 package com.damazon.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Items")
+@Table(name = "items")
 public class Item {
     @Id
-    @Column(name = "itemID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "itemid")
     private Integer itemId;
 
     @Column(name = "name", nullable = false)
@@ -24,10 +27,10 @@ public class Item {
     @Column(name = "rating")
     private Integer rating;
 
-    @Column(name = "imgLocation")
+    @Column(name = "img_location")
     private String imgLocation;
 
-    // Constructors
+    
     public Item() {
     }
 
@@ -40,7 +43,7 @@ public class Item {
         this.imgLocation = imgLocation;
     }
 
-    // Getters
+ 
     public Integer getItemId() {
         return itemId;
     }
@@ -65,7 +68,7 @@ public class Item {
         return imgLocation;
     }
 
-    // Setters
+  
     public void setItemId(Integer itemId) {
         this.itemId = itemId;
     }

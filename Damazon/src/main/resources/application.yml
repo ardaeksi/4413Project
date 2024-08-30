@@ -1,13 +1,18 @@
 spring:
   datasource:
-    url: jdbc:sqlite:resources/StoreDB.db
+    url: jdbc:sqlite:StoreDB.db
     driver-class-name: org.sqlite.JDBC
   jpa:
-    database-platform: org.hibernate.dialect.SQLiteDialect
+    database-platform: com.damazon.config.SQLiteDialect
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none	  
+
+server:
+  servlet:
+    context-path: /Damazon
 
 app:
   jwtSecret: "bXlKV1RTZWNyZXRLZXkxMjMh"  # Unpredictable key :O wow
-  jwtExpirationInMs: 604800000  # Token Expiration: One week (was in miliseconds)
+  jwtExpirationInMs: 604800000  # Token Expiration: One week (in milliseconds)
+

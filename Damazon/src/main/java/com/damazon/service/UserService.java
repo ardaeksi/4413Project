@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,7 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.damazon.dto.*;
 @Service
 public class UserService implements UserDetailsService {
 
@@ -28,9 +29,11 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
     
     @Autowired
+    @Lazy
     private JwtTokenProvider jwtTokenProvider;
        
     // Load user by username
@@ -52,6 +55,7 @@ public class UserService implements UserDetailsService {
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setAdmin(false); //Admin can only be manually added to database
+        
         return userRepository.save(newUser); //Adds to database using JPQL
     }
     
@@ -74,18 +78,22 @@ public class UserService implements UserDetailsService {
     }
     
     @Transactional
-    public ResponseEntity<?> registerUser(User newUser) {
-        if (userRepository.existsByUsername(newUser.getUsername())) {
+    public ResponseEntity<?> registerUser(LoginRequest newUser) {
+        if (userRepository.existsByUsername(newUser.getUserName())) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
         }
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        userRepository.save(newUser);
+        User user = new User();
+        user.setPassword(newUser.getPassword());
+        user.setAdmin(false);
+        user.setUsername(newUser.getUserName());
+        userRepository.save(user);
 
         return ResponseEntity.ok("User registered");
     }
 
     
-    //Admin method Admins can even retrieve password, weakpoint for security but didn't said encrypt
+    //Admin method
     public List<User> getAllUsers(){
     	return userRepository.findAll();
     }
@@ -95,9 +103,7 @@ public class UserService implements UserDetailsService {
         // Attempt to find the existing user by ID
         Optional<User> userOptional = userRepository.findById(id);
         if (!userOptional.isPresent()) {
-            // Handle the case where the user does not exist
-            // You can throw a custom exception or return null
-            throw new RuntimeException("User not found with id: " + id);
+            throw new RuntimeException("User not found for id: " + id);
         }
 
         User existingUser = userOptional.get();
@@ -124,6 +130,8 @@ public class UserService implements UserDetailsService {
     public void deleteUser(Long userId) {
         userRepository.findById(userId).ifPresent(userRepository::delete);
     }
+    
+    
     
     
 }

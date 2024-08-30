@@ -3,27 +3,40 @@ package com.damazon.model;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "wallets")
 public class Wallet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "walletid")
     private Long id;
 
-    private String cardNum;
-    private int expiMonth;
-    private int expiYear;
+    @Column(name = "card_number")
+    private Integer cardNum;  
+
+    @Column(name = "card_expiration")
+    private int expiYear; 
+
+    @Column(name = "cardcvv")
     private int cvv;
 
+   
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userid", nullable = false)
+    private User user; 
+    //Link it to User table/obj
     
     public Wallet() {}
 
-    public Wallet(String cardNum, int expiMonth, int expiYear, int cvv) {
+    
+    public Wallet(int cardNum, int expiYear, int cvv, User user) {
         this.cardNum = cardNum;
-        this.expiMonth = expiMonth;
         this.expiYear = expiYear;
         this.cvv = cvv;
+        this.user = user;
     }
 
+  
     public Long getId() {
         return id;
     }
@@ -32,20 +45,12 @@ public class Wallet {
         this.id = id;
     }
 
-    public String getCardNum() {
+    public int getCardNum() {
         return cardNum;
     }
 
-    public void setCardNum(String cardNum) {
+    public void setCardNum(int cardNum) {
         this.cardNum = cardNum;
-    }
-
-    public int getExpiMonth() {
-        return expiMonth;
-    }
-
-    public void setExpiMonth(int expiMonth) {
-        this.expiMonth = expiMonth;
     }
 
     public int getExpiYear() {
@@ -63,4 +68,14 @@ public class Wallet {
     public void setCvv(int cvv) {
         this.cvv = cvv;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
+    
 }

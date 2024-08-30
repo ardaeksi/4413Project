@@ -28,22 +28,27 @@ public class MainController {
 
     // User endpoints
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
-        return userService.authenticateUser(user);
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    	User exUser = new User();
+    	exUser.setPassword(loginRequest.getPassword());
+    	exUser.setUsername(loginRequest.getUserName());
+        return userService.authenticateUser(exUser);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        return userService.registerUser(user);
+    public ResponseEntity<?> register(@RequestBody LoginRequest loginRequest) {
+    	 return ResponseEntity.ok(userService.registerUser(loginRequest));
     }
-    
-    @GetMapping("/user/{id}")
+
+   /* 
+    @GetMapping("/getUser")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userService.findUserById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+	
+    
     @PutMapping("/user")
     public ResponseEntity<?> updateUser(@RequestBody User user) {
         return userService.updateUser(user);
@@ -51,7 +56,7 @@ public class MainController {
 
     // Product endpoints
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> listAllProducts() {
+    public ResponseEntity List<Item> listAllProducts() {
         List<Product> products = productService.findAllProducts();
         return ResponseEntity.ok(products);
     }
@@ -83,3 +88,7 @@ public class MainController {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound
+        }
+    }
+    */
+}

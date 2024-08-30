@@ -11,7 +11,7 @@ public class AuthenticationResponse {
         this.token = token;
     }
 
-    // Getters and setters
+   
     public String getUserId() {
         return userName;
     }

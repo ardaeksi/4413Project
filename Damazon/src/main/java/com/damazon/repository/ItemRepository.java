@@ -18,11 +18,11 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	 	@Query("SELECT i FROM Item i")
 	    List<Item> findAllItems();
 	 	
-	 	@Query("SELECT i FROM Item i WHERE i.itemID = :itemID")
-	 	Optional<Item> findById(@Param("itemID")Integer itemID);
+	 	@Query("SELECT i FROM Item i WHERE i.itemId = :itemId")
+	 	Optional<Item> findById(@Param("itemId") Integer itemId);
 	 	
-	 	@Query("SELECT i FROM Item i where i.productName = :productName")
-	 	List<Item> findByProductName(@Param("productName")String productName);
+	 	@Query("SELECT i FROM Item i WHERE i.name = :name")
+	 	List<Item> findByProductName(@Param("name") String name);
 	 	
 	 	
 }

@@ -1,18 +1,21 @@
 package com.damazon.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Orders")
+@Table(name = "orders")
 public class Order {
     @Id
-    @Column(name = "orderID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "orderid")
     private Long orderId;
 
-    @Column(name = "userID", nullable = false)
+    @Column(name = "userid", nullable = false)
     private Long userId;
 
     @Column(name = "cost")
