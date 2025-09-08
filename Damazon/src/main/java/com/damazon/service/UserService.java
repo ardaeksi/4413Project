@@ -41,7 +41,12 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),"", Collections.singletonList(new SimpleGrantedAuthority(user.isAdmin() ? "ROLE_ADMIN" : "ROLE_USER")));
+        // IMPORTANT: include the user's stored password so authentication can validate correctly
+        return new org.springframework.security.core.userdetails.User(
+                user.getUserName(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority(user.isAdmin() ? "ROLE_ADMIN" : "ROLE_USER"))
+        );
     }
 
     // Register a new user
@@ -51,7 +56,7 @@ public class UserService implements UserDetailsService {
         }
         
         User newUser = new User();
-        newUser.setUsername(username);
+        newUser.setUserName(username);
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setAdmin(false); //Admin can only be manually added to database
         
@@ -63,7 +68,7 @@ public class UserService implements UserDetailsService {
     public ResponseEntity<?> authenticateUser(User loginRequest) {
         UserDetails userDetails;
         try {
-            userDetails = loadUserByUsername(loginRequest.getUsername());
+            userDetails = loadUserByUsername(loginRequest.getUserName());
             if (!passwordEncoder.matches(loginRequest.getPassword(), userDetails.getPassword())) {
                 throw new BadCredentialsException("Invalid password");
             }
@@ -85,7 +90,7 @@ public class UserService implements UserDetailsService {
         User user = new User();
         user.setPassword(newUser.getPassword());
         user.setAdmin(false);
-        user.setUsername(newUser.getUserName());
+        user.setUserName(newUser.getUserName());
         userRepository.save(user);
 
         return ResponseEntity.ok("User registered");
@@ -108,8 +113,8 @@ public class UserService implements UserDetailsService {
         User existingUser = userOptional.get();
 
         
-        if (updatedUser.getUsername() != null) {
-            existingUser.setUsername(updatedUser.getUsername());
+        if (updatedUser.getUserName() != null) {
+            existingUser.setUserName(updatedUser.getUserName());
         }
       
         if (updatedUser.getPassword() != null) {

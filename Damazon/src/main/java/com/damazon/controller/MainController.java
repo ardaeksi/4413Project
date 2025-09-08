@@ -31,7 +31,7 @@ public class MainController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
     	User exUser = new User();
     	exUser.setPassword(loginRequest.getPassword());
-    	exUser.setUsername(loginRequest.getUserName());
+    	exUser.setUserName(loginRequest.getUserName());    	
         return userService.authenticateUser(exUser);
     }
 

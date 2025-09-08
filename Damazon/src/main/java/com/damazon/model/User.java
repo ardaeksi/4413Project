@@ -3,47 +3,61 @@ package com.damazon.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "users")  
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId")
     private Long userId;
-    
+
     @Column(name = "isAdmin", nullable = false)
-    private int isAdmin;  // 0 = user ,  1 = Admin
-    
+    private int isAdmin;
+
     @Column(name = "userName", unique = true, nullable = false)
-    private String username;  
+    private String userName;
 
     @Column(name = "password", nullable = false)
-    private String password;  
+    private String password;
 
     @Column(name = "walletId")
-    private Integer walletId;  
+    private Integer walletId;
 
     @Column(name = "orders")
     private String orders;
 
-    public User() {
-    }
+    public User() {}
 
-    // Getters and Setters
-    public Long getuserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setuserId(Long id) {
-        this.userId = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public int getIsAdmin() {
+        return isAdmin;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setIsAdmin(int isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin != 0;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.isAdmin = admin ? 1 : 0;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
@@ -54,14 +68,6 @@ public class User {
         this.password = password;
     }
 
-    public boolean isAdmin() {
-        return (isAdmin!=0) ;
-    }
-
-    public void setAdmin(boolean admin) {
-    	this.isAdmin = admin ? 1 : 0;
-    }
-
     public Integer getWalletId() {
         return walletId;
     }
@@ -70,12 +76,12 @@ public class User {
         this.walletId = walletId;
     }
 
-    public String getOrders(){
+    public String getOrders() {
         return orders;
     }
+
     public void setOrders(String orders) {
         this.orders = orders;
     }
-
-    
 }
+
